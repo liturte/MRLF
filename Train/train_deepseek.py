@@ -56,7 +56,7 @@ deepspeed_config = {
 
 # 定义训练参数
 training_args = TrainingArguments(
-    output_dir='/data/coding/RLTF/data/new_result',
+    output_dir='',
     evaluation_strategy="steps",
     per_device_train_batch_size=1,
     per_device_eval_batch_size=1,
