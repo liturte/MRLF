@@ -6,10 +6,7 @@ from peft import LoraConfig
 from trl import SFTTrainer
 import wandb
 
-# 设置环境变量
 
-
-# 加载模型和分词器
 model = AutoModelForCausalLM.from_pretrained(model_name)  # 将模型移到GPU上
 model.gradient_checkpointing_enable()
 model = model.cuda()
@@ -17,17 +14,13 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.add_eos_token = True
 
-# 登录 wandb
 
 run = wandb.init(
     project="TRAIN1",
     job_type="training",
 )
-
-# 加载数据集
 dataset = load_dataset("json", data_files=dataset_name, split="train")
 
-# 配置 LoRA
 peft_config = LoraConfig(
     r=8,
     lora_alpha=16,
@@ -41,7 +34,7 @@ training_arguments = TrainingArguments(
     output_dir="",
     num_train_epochs=5,
     per_device_train_batch_size=4,
-    gradient_accumulation_steps=4,  # 增加梯度累积步数
+    gradient_accumulation_steps=4,
     optim="paged_adamw_8bit",
     save_steps=25,
     logging_steps=30,
@@ -57,7 +50,6 @@ training_arguments = TrainingArguments(
     report_to="wandb",
 )
 
-# 初始化 Trainer
 trainer = SFTTrainer(
     model=model,
     train_dataset=dataset,
@@ -68,5 +60,4 @@ trainer = SFTTrainer(
     packing=False,
 )
 
-# 训练模型
 trainer.train()
